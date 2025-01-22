@@ -1,5 +1,8 @@
 package com.projeto_blog.apiblog.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -17,10 +20,16 @@ public class PostEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
+
     @ManyToOne
     @JoinColumn(name = "author_name")
+    @JsonIgnore  // Ignora o autor completo na serialização
     private User author;
+
+    @JsonProperty("author")  // Renomeia o campo para "author" no JSON
+    public String getAuthorName() {
+        return (author != null) ? author.getName() : null;
+    }
 
     @NotBlank
     private String title;
@@ -47,6 +56,14 @@ public class PostEntity {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public User getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(User author) {
+        this.author = author;
     }
 
     public String getContent() {
