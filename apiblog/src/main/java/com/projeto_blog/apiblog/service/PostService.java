@@ -23,9 +23,9 @@ public class PostService {
     public ResponseEntity<String> createPost(PostEntity post) {
         try {
 
-            // if(author == null){
-            //     return new ResponseEntity<>("O usuario deve estar logado!", HttpStatus.UNAUTHORIZED);
-            // }
+            if(author == null){
+                return new ResponseEntity<>("O usuario deve estar logado!", HttpStatus.UNAUTHORIZED);
+            }
 
             postsRepository.save(post);
             return new ResponseEntity<>("Post criado com sucesso!", HttpStatus.CREATED);
