@@ -31,6 +31,11 @@ public class PostEntity {
         return (author != null) ? author.getName() : null;
     }
 
+    @JsonProperty("authorEmail") // Adiciona um campo para o email no JSON
+    public String getAuthorEmail() {
+        return (author != null) ? author.getEmail() : null;
+    }
+
     @NotBlank
     private String title;
 
