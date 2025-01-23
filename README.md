@@ -51,13 +51,14 @@ spring.jpa.database-platform=org.hibernate.dialect.MySQL8Dialect
 
 4. Compile e execulte o projeto
 
-    Com Maven, você pode compilar e rodar o projeto com os seguintes comandos:
+Com Maven, você pode compilar e rodar o projeto com os seguintes comandos:
 
-    ```bash
-    mvn clean install
-    mvn spring-boot:run
-    ```
-    ou navegue até o arquivo ApiblogApplication.java e execute-o.
+```bash
+mvn clean install
+mvn spring-boot:run
+```
+
+Ou navegue até o arquivo ApiblogApplication.java e execute-o.
 
 ### Documentação
 
