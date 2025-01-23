@@ -2,8 +2,6 @@ package com.projeto_blog.apiblog.service;
 
 import java.util.List;
 
-import javax.swing.RepaintManager;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
