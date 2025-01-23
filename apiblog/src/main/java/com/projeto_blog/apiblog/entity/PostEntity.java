@@ -22,16 +22,16 @@ public class PostEntity {
 
 
     @ManyToOne
-    @JoinColumn(name = "author_name")
-    @JsonIgnore  // Ignora o autor completo na serialização
+    @JoinColumn(name = "author_name") // Define a junção com a tabela Author pelo nome de author_name
+    @JsonIgnore  // Ignora o objeto author na serialização do json
     private User author;
 
-    @JsonProperty("author")  // Renomeia o campo para "author" no JSON
+    @JsonProperty("authorName")  // Adiciona um campo no json e define o dado a ser serializado
     public String getAuthorName() {
         return (author != null) ? author.getName() : null;
     }
 
-    @JsonProperty("authorEmail") // Adiciona um campo para o email no JSON
+    @JsonProperty("authorEmail")
     public String getAuthorEmail() {
         return (author != null) ? author.getEmail() : null;
     }

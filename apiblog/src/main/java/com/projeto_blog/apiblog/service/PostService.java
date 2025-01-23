@@ -2,6 +2,8 @@ package com.projeto_blog.apiblog.service;
 
 import java.util.List;
 
+import javax.swing.RepaintManager;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -86,5 +88,24 @@ public class PostService {
         postsRepository.save(post);
 
         return new ResponseEntity<>("Post atualizado!", HttpStatus.OK);
+    }
+
+    public ResponseEntity<String> deletePost(Long id) {
+
+        PostEntity post = postsRepository.findById(id).orElse(null);
+
+        if(post == null){
+            throw new PostNotFoundException("Post não encontrado.");
+        }
+
+        String currentUser = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if(!post.getAuthorEmail().equals(currentUser)){
+            throw new UnauthorizedAccessException("Você não tem permissão para deletar este post.");
+        }
+
+        postsRepository.deleteById(id);
+
+        return new ResponseEntity<>("Post Deletado!", HttpStatus.OK);
     }
 }

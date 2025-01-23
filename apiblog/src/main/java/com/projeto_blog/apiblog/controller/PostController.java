@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -43,5 +44,10 @@ public class PostController {
     @PutMapping("/{id}")
     public ResponseEntity<String> updatePosts(@PathVariable("id") Long id, @RequestBody UpdatePostDTO updatePostDTO) {
         return postService.updatePosts(id, updatePostDTO);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deletePost(@PathVariable("id") Long id) {
+        return postService.deletePost(id);
     }
 }
