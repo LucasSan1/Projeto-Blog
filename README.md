@@ -40,7 +40,7 @@ CREATE DATABASE blog;
 ```
 3. Configure o application.properties com suas credenciais do banco de dados
 ```bash
-spring.datasource.url=jdbc:mysql:{url para o seu banco de dados}
+spring.datasource.url=jdbc:mysql://localhost3306/blog
 spring.datasource.username=seu_usuario
 spring.datasource.password=sua_senha
 spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
@@ -58,3 +58,7 @@ spring.jpa.database-platform=org.hibernate.dialect.MySQL8Dialect
     mvn spring-boot:run
     ```
     ou navegue até o arquivo ApiblogApplication.java e execute-o.
+
+### Documentação
+
+Após execultar o projeto, você pode acessar a documentação da API em [http://localhost:8080/swagger-ui.html]
