@@ -135,7 +135,7 @@ public class UserService {
         }
 
         // Remove o token do usuário
-        userExist.setToken("");
+        userExist.setToken(null);
         userRepository.save(userExist);
         return ResponseEntity.ok("Logout realizado com sucesso!");
     }
