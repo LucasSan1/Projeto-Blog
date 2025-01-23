@@ -22,7 +22,6 @@ Este é um projeto de blog simples, desenvolvido com **Java 17**, **Spring Boot*
 - **MySQL** (para persistência dos dados)
 - **JWT (JSON Web Tokens)** (para autenticação)
 - **Spring Security** (para proteger as rotas)
-- **MySQL** (ou qualquer outro banco de dados relacional de sua escolha)
 - **Swagger/OpenAPI** (para documentação da API)
 
 ### Passos para rodar o projeto
@@ -30,8 +29,8 @@ Este é um projeto de blog simples, desenvolvido com **Java 17**, **Spring Boot*
 1. Clone este repositório:
 
 ```bash
-git clone https://github.com/seu_usuario/seu_repositorio.git
-cd seu_repositorio 
+git clone https://github.com/LucasSan1/Projeto-Blog.git
+cd projeto-blog
 ```
 
 2. Crie o Banco de Dados Mysql
@@ -53,7 +52,7 @@ spring.jpa.database-platform=org.hibernate.dialect.MySQL8Dialect
 4. Compile e execulte o projeto
 
     Com Maven, você pode compilar e rodar o projeto com os seguintes comandos:
-    
+
     ```bash
     mvn clean install
     mvn spring-boot:run
