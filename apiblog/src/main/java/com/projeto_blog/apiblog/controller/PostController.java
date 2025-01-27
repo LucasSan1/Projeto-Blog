@@ -42,12 +42,18 @@ public class PostController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<String> updatePosts(@PathVariable("id") Long id, @RequestBody UpdatePostDTO updatePostDTO) {
-        return postService.updatePosts(id, updatePostDTO);
+    public ResponseEntity<String> updatePosts(@PathVariable("id") Long id, @RequestBody UpdatePostDTO updatePostDTO, @RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader) {
+        
+        String token = authHeader.replace("Bearer ", "");
+
+        return postService.updatePosts(id, updatePostDTO, token);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deletePost(@PathVariable("id") Long id) {
-        return postService.deletePost(id);
+    public ResponseEntity<String> deletePost(@PathVariable("id") Long id, @RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader) {
+        
+        String token = authHeader.replace("Bearer ", "");
+
+        return postService.deletePost(id, token);
     }
 }

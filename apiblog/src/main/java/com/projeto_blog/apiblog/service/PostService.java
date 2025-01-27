@@ -10,7 +10,8 @@ import org.springframework.stereotype.Service;
 import com.projeto_blog.apiblog.DTO.UpdatePostDTO;
 import com.projeto_blog.apiblog.entity.PostEntity;
 import com.projeto_blog.apiblog.entity.User;
-import com.projeto_blog.apiblog.exceptions.PostsException.*;
+import com.projeto_blog.apiblog.exceptions.PostsException.PostNotFoundException;
+import com.projeto_blog.apiblog.exceptions.PostsException.UnauthorizedAccessException;
 import com.projeto_blog.apiblog.repository.PostsRepository;
 import com.projeto_blog.apiblog.repository.UserRepository;
 import com.projeto_blog.apiblog.security.JwtTokenUtil; 
@@ -30,14 +31,13 @@ public class PostService {
 
     public ResponseEntity<String> createPost(PostEntity post, String token) {
         try {
-            // Extrair o nome de usuário do token JWT
-            String username = jwtTokenUtil.extractUsername(token);
-
 
             if (jwtTokenUtil.isTokenExpired(token)) {
-                return new ResponseEntity<>("Token expirado", HttpStatus.UNAUTHORIZED);
+                return new ResponseEntity<>("Token expirado!", HttpStatus.UNAUTHORIZED);
             }
 
+            // Extrair o nome de usuário do token JWT
+            String username = jwtTokenUtil.extractUsername(token);
             User user = userRepository.findByEmail(username); 
 
             if (user == null) {
@@ -52,7 +52,7 @@ public class PostService {
 
         } catch (Exception e) {
             e.printStackTrace();
-            return new ResponseEntity<>("Erro ao criar post: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>("Erro interno do Servidor: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -60,50 +60,71 @@ public class PostService {
         return postsRepository.findAll();
     }
 
-    public ResponseEntity<String> updatePosts(Long id, UpdatePostDTO updatePosts) {
+    public ResponseEntity<String> updatePosts(Long id, UpdatePostDTO updatePosts, String token) {
 
         String title = updatePosts.getTitle();
         String content = updatePosts.getContent();
         String category = updatePosts.getCategory();
 
-        PostEntity post = postsRepository.findById(id).orElse(null);
+        try{
 
-        if (post == null) {
-            throw new PostNotFoundException("Post não encontrado.");
+            if (jwtTokenUtil.isTokenExpired(token)) {
+                return new ResponseEntity<>("Token expirado!", HttpStatus.UNAUTHORIZED);
+            }
+
+            PostEntity post = postsRepository.findById(id).orElse(null);
+
+            if (post == null) {
+                throw new PostNotFoundException("Post não encontrado!");
+            }
+        
+            String currentUser = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+            // Verificar se o usuário autenticado é o autor do post
+            if (!post.getAuthorEmail().equals(currentUser)) {
+                throw new UnauthorizedAccessException("Você não tem permissão para editar este post!");
+            }
+
+            post.setTitle(title);
+            post.setContent(content);
+            post.setCategory(category);
+
+            postsRepository.save(post);
+
+            return new ResponseEntity<>("Post atualizado!", HttpStatus.OK);
+            
+        } catch(Exception e){
+            e.printStackTrace();
+            return new ResponseEntity<>("Erro ao atualizar: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
-    
-        String currentUser = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-        // Verificar se o usuário autenticado é o autor do post
-        if (!post.getAuthorEmail().equals(currentUser)) {
-            throw new UnauthorizedAccessException("Você não tem permissão para editar este post.");
-        }
-
-        post.setTitle(title);
-        post.setContent(content);
-        post.setCategory(category);
-
-        postsRepository.save(post);
-
-        return new ResponseEntity<>("Post atualizado!", HttpStatus.OK);
     }
 
-    public ResponseEntity<String> deletePost(Long id) {
+    public ResponseEntity<String> deletePost(Long id, String token) {
+        try{
 
-        PostEntity post = postsRepository.findById(id).orElse(null);
+            if (jwtTokenUtil.isTokenExpired(token)) {
+                return new ResponseEntity<>("Token expirado!", HttpStatus.UNAUTHORIZED);
+            }
 
-        if(post == null){
-            throw new PostNotFoundException("Post não encontrado.");
+            PostEntity post = postsRepository.findById(id).orElse(null);
+
+            if(post == null){
+                throw new PostNotFoundException("Post não encontrado!");
+            }
+
+            String currentUser = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+            if(!post.getAuthorEmail().equals(currentUser)){
+                throw new UnauthorizedAccessException("Você não tem permissão para deletar este post!");
+            }
+
+            postsRepository.deleteById(id);
+
+            return new ResponseEntity<>("Post Deletado!", HttpStatus.OK);
+
+        } catch(Exception e){
+            e.printStackTrace();
+            return new ResponseEntity<>("Erro ao deletar: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
-        String currentUser = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-        if(!post.getAuthorEmail().equals(currentUser)){
-            throw new UnauthorizedAccessException("Você não tem permissão para deletar este post.");
-        }
-
-        postsRepository.deleteById(id);
-
-        return new ResponseEntity<>("Post Deletado!", HttpStatus.OK);
     }
 }

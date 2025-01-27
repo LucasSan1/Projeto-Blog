@@ -44,6 +44,7 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/public/**").permitAll()  // Permite acesso público para /public/**
                 .requestMatchers("/user/**").authenticated()  // Requer autenticação para /user/**
                 .requestMatchers("/posts/**").authenticated()
+                .requestMatchers("/comments/**").authenticated()
                 .anyRequest().denyAll()  // Bloqueia todas as outras rotas não mencionadas
             )
             .exceptionHandling(customizer -> customizer

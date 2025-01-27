@@ -9,8 +9,11 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
+import java.util.List;
+import java.util.ArrayList;
 
 @Entity
 @Table(name = "posts")
@@ -20,7 +23,6 @@ public class PostEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-
     @ManyToOne
     @JoinColumn(name = "author_name") // Define a junção com a tabela Author pelo nome de author_name
     @JsonIgnore  // Ignora o objeto author na serialização do json
@@ -28,13 +30,16 @@ public class PostEntity {
 
     @JsonProperty("authorName")  // Adiciona um campo no json e define o dado a ser serializado
     public String getAuthorName() {
-        return (author != null) ? author.getName() : null;
+        return  author.getName();
     }
 
     @JsonProperty("authorEmail")
     public String getAuthorEmail() {
-        return (author != null) ? author.getEmail() : null;
+        return author.getEmail();
     }
+
+    @OneToMany(mappedBy = "post") 
+    private List<CommentEntity> comments = new ArrayList<>();
 
     @NotBlank
     private String title;
@@ -87,5 +92,11 @@ public class PostEntity {
         this.category = category;
     }
 
+    public List<CommentEntity> getComments() {
+        return comments;
+    }
 
+    public void setComments(List<CommentEntity> comments) {
+        this.comments = comments;
+    }
 }
