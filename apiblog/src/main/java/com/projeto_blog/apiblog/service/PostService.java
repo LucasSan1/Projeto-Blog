@@ -78,6 +78,7 @@ public class PostService {
                 throw new PostNotFoundException("Post não encontrado!");
             }
         
+            // Obtem o email do usuario logado
             String currentUser = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
             // Verificar se o usuário autenticado é o autor do post
@@ -125,6 +126,20 @@ public class PostService {
         } catch(Exception e){
             e.printStackTrace();
             return new ResponseEntity<>("Erro ao deletar: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public List<PostEntity> getPostsByCategory(String category) {
+        try {
+            List<PostEntity> posts = postsRepository.findByCategory(category);
+            
+            if (posts == null || posts.isEmpty()) {
+                throw new PostNotFoundException("Nenhum post encontrado para a categoria: " + category);
+            }
+    
+            return posts;
+        } catch (Exception e) {
+            throw new RuntimeException("Erro ao buscar posts por categoria: " + e.getMessage());
         }
     }
 }

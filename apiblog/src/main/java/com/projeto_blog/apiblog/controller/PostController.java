@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.projeto_blog.apiblog.DTO.UpdatePostDTO;
@@ -55,5 +56,11 @@ public class PostController {
         String token = authHeader.replace("Bearer ", "");
 
         return postService.deletePost(id, token);
+    }
+
+    @GetMapping("/category")
+    public ResponseEntity<List<PostEntity>> getPostsByCategory(@RequestParam String category) {
+        List<PostEntity> posts = postService.getPostsByCategory(category);
+        return ResponseEntity.ok(posts);
     }
 }

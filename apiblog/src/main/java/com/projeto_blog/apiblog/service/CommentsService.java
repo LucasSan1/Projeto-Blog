@@ -102,7 +102,7 @@ public class CommentsService {
 
         } catch(Exception e){
             e.printStackTrace();
-            return new ResponseEntity<>("Erro atualizar: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>("Erro ao atualizar: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -130,7 +130,7 @@ public class CommentsService {
 
         } catch(Exception e){
             e.printStackTrace();
-            return new ResponseEntity<>("Erro deletar: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>("Erro ao deletar: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
