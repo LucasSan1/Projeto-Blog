@@ -2,7 +2,7 @@
 
 ## Descrição
 
-Este é um projeto de blog simples, desenvolvido com **Java 17**, **Spring Boot** e **Maven**. A API permite que os usuários se registrem, criem posts e comentem nesses posts. (Ainda está em desenvolvimento!! funcionalidades como comentarios ainda está sendo desenvolvida)
+Este é um projeto de blog simples, desenvolvido com **Java 17**, **Spring Boot** e **Maven**. A API permite que os usuários se registrem, criem posts e comentem nesses posts.
 
 ## Funcionalidades
 
