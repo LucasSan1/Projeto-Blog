@@ -45,6 +45,9 @@ public class PostEntity {
     private String title;
 
     @NotBlank
+    private String dateTime;
+
+    @NotBlank
     private String content;
 
     private String category;
@@ -66,6 +69,14 @@ public class PostEntity {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public String getDateTime() {
+        return dateTime;
+    }
+
+    public void setDateTime(String dateTime) {
+        this.dateTime = dateTime;
     }
 
     public User getAuthor() {

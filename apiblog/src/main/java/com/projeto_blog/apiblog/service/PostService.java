@@ -1,5 +1,7 @@
 package com.projeto_blog.apiblog.service;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
@@ -44,8 +46,11 @@ public class PostService {
                 return new ResponseEntity<>("Usuário não encontrado!", HttpStatus.UNAUTHORIZED);
             }
 
+            String dateTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+
             // Associar o autor (usuário) ao post
             post.setAuthor(user);
+            post.setDateTime(dateTime);
 
             postsRepository.save(post);
             return new ResponseEntity<>("Post criado com sucesso!", HttpStatus.CREATED);
