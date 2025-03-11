@@ -19,9 +19,9 @@ const LoginPage = () => {
         } else if (!emailValidation.test(usuario)) {
             alert("Por favor, insira um usuario válido.");
         } else {
-            api.post('/users', {
+            api.post('/user/login', {
                 email: usuario,
-                senha: senha
+                password: senha
             })
             .then((response) => {
                 const token = response.data.token;

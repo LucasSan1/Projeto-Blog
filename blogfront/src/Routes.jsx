@@ -2,9 +2,9 @@ import React, { useContext } from "react";
 import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import { AuthProvider, AuthContext } from "./contexts/auth";
 
-import Login from './views/Login'
+import Login from './views/Login';
 import Main from "./views/MainPage";
-
+import Cadastro from "./views/Cadastro";
 
 const AppRotas = () => {
 
@@ -29,10 +29,10 @@ const AppRotas = () => {
         <BrowserRouter>
             <AuthProvider>
             <Routes>
-                <Route path="/login" element={<Login />} />
-
-                <Route path="/" element={<Main />}>
+                <Route path="/login" element={ <Login /> }/>
+                <Route path="/cadastro" element={ <Cadastro/> }/>
                     
+                <Route path="/" element={<Main />} >
                 </Route>
             </Routes>
             </AuthProvider>

@@ -23,7 +23,7 @@ const PostBox = () => {
     useEffect(() => {
         api.get("/posts")
             .then((res) => {
-                setPosts(res.data);
+                setPosts(res.data.reverse());
             })
             .catch((err) => alert("Deu erro => " + err));
     }, []);
