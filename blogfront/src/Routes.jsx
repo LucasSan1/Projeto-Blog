@@ -5,6 +5,7 @@ import { AuthProvider, AuthContext } from "./contexts/auth";
 import Login from './views/Login';
 import Main from "./views/MainPage";
 import Cadastro from "./views/Cadastro";
+import AtualizarSenha from "./views/AtualizarSenha";
 
 const AppRotas = () => {
 
@@ -31,6 +32,7 @@ const AppRotas = () => {
             <Routes>
                 <Route path="/login" element={ <Login /> }/>
                 <Route path="/cadastro" element={ <Cadastro/> }/>
+                <Route path="atualizarSenha" element={ <AtualizarSenha/> }/>
                     
                 <Route path="/" element={<Main />} >
                 </Route>
