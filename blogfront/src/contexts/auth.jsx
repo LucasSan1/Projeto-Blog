@@ -1,7 +1,7 @@
 import React, { useState, createContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { api } from "../services/api";
-
+import Swal from "sweetalert2"; 
 // Define o contexto
 export const AuthContext = createContext();
 
@@ -14,17 +14,16 @@ export const AuthProvider = ({ children }) => {
     // Função que recebe o usuario e o token da API e salva esses dados
     const login = (usuario, token) => {
         if (usuario === undefined || token === undefined) {
-            alert("Não autenticado");
+            Swal.fire("Erro", "Não autenticado", "error");
         } else {
-           
             localStorage.setItem('user', JSON.stringify(usuario));
-           
             localStorage.setItem('Authorization', `Bearer ${token}`);
 
-            // Atualiza o estado do usuário
+            
             setUser(usuario);
 
             console.log("Logado");
+            Swal.fire("Sucesso", "Login realizado com sucesso!", "success");
             navigate("/");
         }
     };
@@ -37,16 +36,16 @@ export const AuthProvider = ({ children }) => {
             }
         })
         .then((res) => {
-            alert("Logout realizado")
+            Swal.fire("Sucesso", "Logout realizado", "success");
             localStorage.removeItem('user');
             localStorage.removeItem('Authorization');   
             setUser(null);
-            navigate("/");
-        }) .catch((err) => {
-            alert("Erro ao realizar logout " + err);
-            console.log(err)
+            window.location.reload();
         })
-        
+        .catch((err) => {
+            Swal.fire("Erro", "Erro ao realizar logout: " + err, "error");
+            console.log(err);
+        });
     };
 
     // Antes da página ser renderizada, verifica se o usúario ainda esta logado no localStorage

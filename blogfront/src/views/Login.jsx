@@ -2,6 +2,7 @@ import React, { useState, useContext } from "react";
 import { AuthContext } from "../contexts/auth";
 import { Link } from "react-router-dom";
 import { api } from "../services/api";
+import Swal from "sweetalert2";
 
 const LoginPage = () => {
     const { login } = useContext(AuthContext);
@@ -15,24 +16,38 @@ const LoginPage = () => {
         const emailValidation = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
 
         if (usuario.trim() === "" || senha.trim() === "") {
-            alert("Por favor, preencha todos os campos.");
+            Swal.fire({
+                icon: "warning",
+                title: "Campos obrigatórios",
+                text: "Por favor, preencha todos os campos.",
+            });
         } else if (!emailValidation.test(usuario)) {
-            alert("Por favor, insira um usuario válido.");
+            Swal.fire({
+                icon: "error",
+                title: "Usuário inválido",
+                text: "Por favor, insira um usuário válido.",
+            });
         } else {
-            api.post('/user/login', {
+            api.post("/user/login", {
                 email: usuario,
-                password: senha
+                password: senha,
             })
             .then((response) => {
                 const token = response.data.token;
                 login(usuario, token);
-                console.log("Logado");
+
             })
             .catch((erro) => {
+                if (erro.response?.status === 401) {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Email ou senha invalidas!"
+                    });
+                }
                 console.log(erro);
             });
         }
-    }
+    };
 
     return (
         <div className="flex flex-col items-center justify-center bg-[#F4F4F4] min-h-screen px-8">

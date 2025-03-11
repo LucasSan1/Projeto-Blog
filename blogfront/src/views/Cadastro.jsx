@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { api } from "../services/api";
+import Swal from "sweetalert2";
 
 const CadastrarPage = () => {
     const navigate = useNavigate();
+    const [nome, setNome] = useState("");
     const [usuario, setEmail] = useState("");
     const [senha, setSenha] = useState("");
 
@@ -11,20 +13,29 @@ const CadastrarPage = () => {
     const emailValidation = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
 
     const enviar = async () => {
-        if (usuario.trim() === "" || senha.trim() === "") {
-            alert("Por favor, preencha todos os campos.");
+        if (nome.trim() === "" || usuario.trim() === "" || senha.trim() === "") {
+            Swal.fire("Erro", "Por favor, preencha todos os campos.", "error");
         } else if (!emailValidation.test(usuario)) {
-            alert("Por favor, insira um usuário válido.");
+            Swal.fire("Erro", "Por favor, insira um usuário válido.", "error");
         } else {
             try {
-                await api.post('/users', { 
+                await api.post('/user', { 
+                    name: nome, 
                     email: usuario,
-                    senha: senha
+                    password: senha
                 });  
-                alert("Cadastro realizado com sucesso!");
-                navigate('/login');
+                Swal.fire({
+                    title: "Sucesso!",
+                    text: "Cadastro realizado com sucesso!",
+                    icon: "success",
+                    confirmButtonText: "OK"
+                }).then(() => {
+                    navigate('/login');
+                });
             } catch (error) {
-                alert("Erro ao cadastrar. Tente novamente.");
+                console.log(error)
+                Swal.fire("Erro", "Erro ao cadastrar. Tente novamente.", "error");
+                
             }
         }
     }
@@ -34,6 +45,20 @@ const CadastrarPage = () => {
             <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
                 <h1 className="text-2xl font-bold text-center text-gray-800 mb-6">Cadastrar-se</h1>
                 <form>
+                  
+                    <div className="mb-4">
+                        <label htmlFor="nome" className="block text-gray-700 font-medium">Nome:</label>
+                        <input 
+                            name="nome" 
+                            type="text" 
+                            id="nome" 
+                            required 
+                            value={nome} 
+                            onChange={(e) => setNome(e.target.value)}
+                            className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+                    </div>
+
                     <div className="mb-4">
                         <label htmlFor="email" className="block text-gray-700 font-medium">Usuário:</label>
                         <input 

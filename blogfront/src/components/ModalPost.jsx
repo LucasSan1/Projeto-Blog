@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { api } from "../services/api";
+import Swal from "sweetalert2";
 
 const NovoPost= ({ isOpen, onClose, onCreate }) => {
     const [title, setTitle] = useState("");
@@ -21,8 +22,12 @@ const NovoPost= ({ isOpen, onClose, onCreate }) => {
             }
         })
         .then((res) => {
-            alert(res.data)
-
+            Swal.fire({
+                title: "Sucesso!",
+                text: res.data,
+                icon: "success",
+                confirmButtonText: "OK"
+            })
             setTitle(""); 
             setContent(""); 
             setCategory("");
@@ -30,7 +35,7 @@ const NovoPost= ({ isOpen, onClose, onCreate }) => {
             window.location.reload();
 
         }) .catch((err) =>{
-            alert("erro: " + err)
+           Swal.fire("Erro", "Erro ao criar a post. Tente novamente.", "error");
             console.log(err)
         })
     
