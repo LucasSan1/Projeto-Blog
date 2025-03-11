@@ -3,6 +3,7 @@ import { api } from "../services/api";
 import { formatDistanceToNow, parseISO } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { FiEdit, FiCheck, FiX, FiTrash2 } from "react-icons/fi";
+import ModalConfirmar from "./ModalConfirmar";
 
 const formatRelativeTime = (dateString) => {
     if (!dateString) return "Data não disponível";
@@ -21,7 +22,10 @@ const PostBox = () => {
     const [editingComment, setEditingComment] = useState(null);
     const [editedContent, setEditedContent] = useState("");
     const [editedTitle, setEditedTitle] = useState("");
-    const [editedCategory, setEditedCategory] = useState("");  
+    const [editedCategory, setEditedCategory] = useState("");
+    const [isModalOpen, setIsModalOpen] = useState(false); 
+    const [itemToDelete, setItemToDelete] = useState(null); 
+    const [itemType, setItemType] = useState('');  
 
     useEffect(() => {
         api.get("/posts")
@@ -47,11 +51,10 @@ const PostBox = () => {
         setEditingPost(post.id);
         setEditedContent(post.content);
         setEditedTitle(post.title);
-        setEditedCategory(post.category);  
+        setEditedCategory(post.category);
     };
 
     const savePostEdit = (post) => {
-        // Verificando se houve mudanças
         if (editedTitle === post.title && editedContent === post.content && editedCategory === post.category) {
             alert("Nenhuma mudança foi feita.");
             setEditingPost(null);
@@ -59,40 +62,49 @@ const PostBox = () => {
         }
 
         api.put(`/posts/${post.id}`, {
-            title: editedTitle || post.title,  // Se o valor de editedTitle não tiver mudado, mantém o título original
-            content: editedContent || post.content, // Mesmo caso para o conteúdo
-            category: editedCategory || post.category,  // E para a categoria
+            title: editedTitle || post.title,
+            content: editedContent || post.content,
+            category: editedCategory || post.category,
         }, {
             headers: { Authorization: localStorage.getItem("Authorization") }
         }).then(() => window.location.reload())
           .catch(() => alert("Erro ao editar post"));
     };
 
-    const deletePost = (postID) => {
-        api.delete(`/posts/${postID}`, {
-            headers: { Authorization: localStorage.getItem("Authorization") }
-        }).then(() => window.location.reload())
-          .catch(() => alert("Erro ao excluir post"));
-    };
-
-    const deleteComment = (commentID) => {
-        api.delete(`/comments/${commentID}`, {
-            headers: { Authorization: localStorage.getItem("Authorization") }
-        }).then(() => window.location.reload())
-          .catch(() => alert("Erro ao excluir comentário"));
-    };
-
-    const saveCommentEdit = (comment) => {
-        if (editedContent === comment.content) {
-            alert("Nenhuma mudança foi feita.");
-            setEditingComment(null);
-            return;
+    const deletePost = () => {
+        if (itemToDelete) {
+            api.delete(`/posts/${itemToDelete.id}`, {
+                headers: { Authorization: localStorage.getItem("Authorization") }
+            }).then(() => {
+                setIsModalOpen(false);
+                window.location.reload();
+            }).catch(() => alert("Erro ao excluir post"));
         }
+    };
 
-        api.put(`/comments/${comment.id}`, { content: editedContent }, {
-            headers: { Authorization: localStorage.getItem("Authorization") }
-        }).then(() => window.location.reload())
-          .catch(() => alert("Erro ao editar comentário"));
+    const deleteComment = () => {
+        if (itemToDelete) {
+            api.delete(`/comments/${itemToDelete.id}`, {
+                headers: { Authorization: localStorage.getItem("Authorization") }
+            }).then(() => {
+                setIsModalOpen(false);
+                window.location.reload();
+            }).catch(() => alert("Erro ao excluir comentário"));
+        }
+    };
+
+    const handleModalClose = () => {
+        setIsModalOpen(false);
+        setItemToDelete(null); 
+        setItemType('');  
+    };
+
+    const handleConfirmDelete = () => {
+        if (itemType === 'post') {
+            deletePost();
+        } else if (itemType === 'comment') {
+            deleteComment();
+        }
     };
 
     return (
@@ -109,7 +121,11 @@ const PostBox = () => {
                             <button onClick={() => handleEditPost(post)} className="text-blue-500 text-sm">
                                 <FiEdit />
                             </button>
-                            <button onClick={() => deletePost(post.id)} className="text-red-500 text-sm flex items-center">
+                            <button onClick={() => {
+                                setItemToDelete(post);
+                                setItemType('post'); 
+                                setIsModalOpen(true);  
+                            }} className="text-red-500 text-sm flex items-center">
                                 <FiTrash2 /> Excluir
                             </button>
                         </div>
@@ -157,36 +173,33 @@ const PostBox = () => {
                                             <span className="font-semibold text-gray-800">{comment.author_name}</span>
                                             <div className="flex items-center space-x-2">
                                                 <span className="text-sm text-gray-500">{formatRelativeTime(comment.datetime)}</span>
-                                                <button onClick={() => handleEditComment(comment)} className="text-blue-500 text-sm">
-                                                    <FiEdit />
-                                                </button>
-                                                <button onClick={() => deleteComment(comment.id)} className="text-red-500 text-sm">
-                                                    <FiTrash2 /> 
+                                                <button onClick={() => {
+                                                    setItemToDelete(comment);
+                                                    setItemType('comment'); 
+                                                    setIsModalOpen(true);  
+                                                }} className="text-red-500 text-sm">
+                                                    <FiTrash2 /> Excluir
                                                 </button>
                                             </div>
                                         </div>
-                                        {editingComment === comment.id ? (
-                                            <div>
-                                                <textarea value={editedContent} onChange={(e) => setEditedContent(e.target.value)} className="w-full p-2 border rounded-lg"></textarea>
-                                                <button onClick={() => saveCommentEdit(comment)} className="text-green-500 mx-2"><FiCheck /></button>
-                                                <button onClick={() => setEditingComment(null)} className="text-red-500"><FiX /></button>
-                                            </div>
-                                        ) : (
-                                            <p className="text-gray-600 mt-2">{comment.content}</p>
-                                        )}
+                                        <p className="text-gray-600 mt-2">{comment.content}</p>
                                     </div>
                                 ))
                             ) : (
                                 <p className="text-gray-600">Ainda não há comentários.</p>
                             )}
-                            <form onSubmit={(e) => handleNewComment(e, post.id)} className="mt-4 flex">
-                                <input type="text" className="w-full p-2 border border-gray-300 rounded-lg" placeholder="Digite seu comentário..." value={newComment} onChange={(e) => setNewComment(e.target.value)} />
-                                <button type="submit" className="bg-[#007BFF] text-white px-4 py-2 rounded-lg ml-2">Enviar</button>
-                            </form>
                         </div>
                     </div>
                 </div>
             ))}
+
+            {/* Modal de confirmação de exclusão */}
+            <ModalConfirmar 
+                isOpen={isModalOpen}
+                onClose={handleModalClose}
+                onConfirm={handleConfirmDelete}
+                message={itemType === 'post' ? "Você tem certeza que deseja excluir este post?" : "Você tem certeza que deseja excluir este comentário?"}
+            />
         </div>
     );
 };
