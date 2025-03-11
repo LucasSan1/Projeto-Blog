@@ -34,7 +34,7 @@ const Header = () => {
                         onClick={handleLoginLogout}
                         className="bg-[#FF6F61] text-white text-lg py-2 px-6 rounded-lg hover:scale-105 transition-transform duration-200"
                     >
-                        {authenticated ? "Logout" : "Login"} {/* Alterna entre Login e Logout */}
+                        {authenticated ? "Logout" : "Login"}
                     </button>
                 </div>
             </div>

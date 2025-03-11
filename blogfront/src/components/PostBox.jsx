@@ -28,10 +28,33 @@ const PostBox = () => {
             .catch((err) => alert("Deu erro => " + err));
     }, []);
 
-    const handleNewComment = (e) => {
+
+    const handleNewComment = (e, postID) => {
         e.preventDefault();
-        alert("Comentário enviado: " + newComment);
-        setNewComment(""); 
+        
+        api.post(`/comments/${postID}`, {
+            content: newComment
+        }, {
+            headers: {
+                Authorization: localStorage.getItem("Authorization")
+            }
+        })
+        .then((res) => {
+            alert(res.data);
+
+            window.location.reload();    
+            
+        }) .catch((err) => {
+            if(err.response.status == 401){
+                alert("Você precisa estar logado para comentar!");
+            } else {
+                alert("Erro ao comentar! ");
+            }
+            console.log(err)
+        })
+
+        setNewComment("");
+        
     };
 
     if (!posts || posts.length === 0) {
@@ -74,7 +97,7 @@ const PostBox = () => {
                             )}
 
                             {/* Input para novo comentário*/}
-                            <form onSubmit={handleNewComment} className="mt-4 flex">
+                            <form onSubmit={(e) => handleNewComment(e, item.id)} className="mt-4 flex">
                                 <input
                                     type="text"
                                     className="w-full p-2 border border-gray-300 rounded-lg"
