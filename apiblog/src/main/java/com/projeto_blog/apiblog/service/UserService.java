@@ -71,12 +71,12 @@ public class UserService {
 
         // Gera o token
         String token = JwtTokenUtil.generateToken(user.getEmail());
-        String tokenSulfixo = "Bearer " + token;
+
         user.setToken(token); // Salva o token do usuario no banco
         userRepository.save(user);
 
         // Caso o login seja bem-sucedido, retorna a mensagem de logado com sucesso e o token
-        LoginResponse loginResponse = new LoginResponse("Logado com sucesso!", tokenSulfixo);
+        LoginResponse loginResponse = new LoginResponse("Logado com sucesso!", token);
         return ResponseEntity.ok(loginResponse);
     }
 
