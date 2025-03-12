@@ -16,7 +16,7 @@ const formatRelativeTime = (dateString) => {
     }
 };
 
-const PostBox = () => {
+const PostBox = ({ searchTerm }) => {
     const [posts, setPosts] = useState([]);
     const [newComment, setNewComment] = useState("");
     const [editingPost, setEditingPost] = useState(null);
@@ -30,17 +30,34 @@ const PostBox = () => {
     const [userEmail, setUserEmail] = useState(""); 
     const [editingComment, setEditingComment] = useState(null); 
     const [editedCommentContent, setEditedCommentContent] = useState("");
+    const [filteredPosts, setFilteredPosts] = useState([]);
 
     useEffect(() => {
-        const token = localStorage.getItem("Authorization");
-        const email = JSON.parse(localStorage.getItem("user") || '""');
-        setUserEmail(email);
-        setIsLoggedIn(!!token);  
-
         api.get("/posts")
-            .then((res) => setPosts(res.data.reverse()))
+            .then((res) => {
+                const fetchedPosts = res.data.reverse();
+                setPosts(fetchedPosts);
+                setFilteredPosts(fetchedPosts);
+
+                const token = localStorage.getItem("Authorization");
+                const email = JSON.parse(localStorage.getItem("user") || '""');
+                setUserEmail(email);
+                setIsLoggedIn(!!token);  
+            })
             .catch((err) => Swal.fire("Erro", "Deu erro => " + err, "error"));
     }, []);
+
+    // Filtra os posts em tempo real sempre que a busca muda
+    useEffect(() => {
+        const lowerCaseSearch = searchTerm.toLowerCase();
+        setFilteredPosts(
+            posts.filter((post) =>
+                post.title.toLowerCase().includes(lowerCaseSearch) ||
+                post.content.toLowerCase().includes(lowerCaseSearch)
+            )
+        );
+    }, [searchTerm, posts]);
+
 
     const handleNewComment = (e, postID) => {
         e.preventDefault();
@@ -110,7 +127,15 @@ const PostBox = () => {
             }).then(() => {
                 setIsModalOpen(false);
                 window.location.reload();
-            }).catch(() => Swal.fire("Erro", "Erro ao excluir post", "error"));
+            }).catch((err) => {
+                if(err.response?.status === 409){
+                    Swal.fire("Erro", "Não é possível deletar um post que ainda tem comentários", "error")
+                }else {
+                    Swal.fire("Erro", "Erro ao excluir post", "error") 
+                }
+                console.log("Erro ao deletar post: ", err);
+
+            });
         }
     };
 
@@ -142,7 +167,8 @@ const PostBox = () => {
     return (
         <div className="space-y-6">
             {/* Seção de posts */}
-            {posts.map((post) => (
+            {filteredPosts.length > 0 ? (
+                filteredPosts.map((post) => (
                 <div key={post.id} className="bg-gray-50 p-6 rounded-lg shadow-md border border-gray-300 mb-6">
                     <div className="flex justify-between text-sm text-gray-500 mb-4">
                         <div className="flex items-center space-x-2">
@@ -243,7 +269,10 @@ const PostBox = () => {
                         </div>
                     </div>
                 </div>
-            ))}
+              ))
+            ) : (
+                <p className="text-gray-600">Nenhum post encontrado.</p>
+            )}
 
             {/* Modal de confirmação */}
             {isModalOpen && (
@@ -251,7 +280,7 @@ const PostBox = () => {
                     isOpen={isModalOpen}
                     onClose={handleModalClose}
                     onConfirm={handleConfirmDelete}
-                    message={itemType === 'post' ? "Tem certeza que deseja excluir este post?" : "Tem certeza que deseja excluir este comentário?"}
+                    message={itemType === 'post' ? "Tem certeza que deseja excluir este post e todos seus comentarios?" : "Tem certeza que deseja excluir este comentário?"}
                 />
             )}
         </div>

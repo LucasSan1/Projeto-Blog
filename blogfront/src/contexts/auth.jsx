@@ -36,11 +36,14 @@ export const AuthProvider = ({ children }) => {
             }
         })
         .then((res) => {
-            Swal.fire("Sucesso", "Logout realizado", "success");
-            localStorage.removeItem('user');
-            localStorage.removeItem('Authorization');   
-            setUser(null);
-            window.location.reload();
+            Swal.fire("Sucesso", "Logout realizado", "success").then(() => {
+                localStorage.removeItem('user');
+                localStorage.removeItem('Authorization'); 
+                  
+                setUser(null);
+               
+                window.location.reload();
+            });
         })
         .catch((err) => {
             Swal.fire("Erro", "Erro ao realizar logout: " + err, "error");

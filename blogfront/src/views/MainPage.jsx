@@ -5,17 +5,14 @@ import NovoPost from "../components/ModalPost";
 
 const MainPage = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
-    
-    const handleClose = () => {
-        setIsModalOpen(false);
-
-    };
+    const [searchTerm, setSearchTerm] = useState(""); 
 
     return (
-        <>
-            <Header />
-            <div className="pt-24"> 
-                <PostBox />
+        <>         
+            <Header onSearch={setSearchTerm} />
+
+            <div className="pt-24 px-4">
+                <PostBox searchTerm={searchTerm} />
             </div>
 
             <button 
@@ -28,8 +25,6 @@ const MainPage = () => {
             <NovoPost 
                 isOpen={isModalOpen} 
                 onClose={() => setIsModalOpen(false)} 
-                onCreate={handleClose} 
-
             />
         </>
     );

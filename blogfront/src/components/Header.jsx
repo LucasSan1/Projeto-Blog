@@ -1,17 +1,22 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../contexts/auth";
 
-const Header = () => {
+const Header = ({ onSearch }) => {
     const { authenticated, logout } = useContext(AuthContext);
+    const [searchTerm, setSearchTerm] = useState("");
 
     const handleLoginLogout = () => {
         if (authenticated) {
             logout(); 
         } else {
-           
             window.location.href = "/login";
         }
+    };
+
+    const handleSearchChange = (e) => {
+        setSearchTerm(e.target.value);
+        onSearch(e.target.value);
     };
 
     return (
@@ -25,6 +30,8 @@ const Header = () => {
                     <input 
                         type="text"
                         placeholder="Buscar no blog..."
+                        value={searchTerm}
+                        onChange={handleSearchChange}
                         className="w-full max-w-lg p-2 border border-[#007BFF] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#007BFF]"
                     />
                 </div>
