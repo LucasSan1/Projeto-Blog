@@ -26,7 +26,7 @@ public class JwtTokenUtil {
             return Jwts.builder()
                     .setSubject(email)
                     .setIssuedAt(new Date()) // Data de criação
-                    .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60)) // tempo em que expira o token
+                    .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 12)) // tempo em que expira o token
                     .signWith(key) // Algoritimo de assinatura e chave secreta
                 .compact();
     }

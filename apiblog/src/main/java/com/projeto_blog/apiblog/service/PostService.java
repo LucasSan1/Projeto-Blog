@@ -130,7 +130,7 @@ public class PostService {
 
         } catch(Exception e){
             e.printStackTrace();
-            return new ResponseEntity<>("Erro ao deletar: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>("Erro ao deletar: " + e.getMessage(), HttpStatus.CONFLICT);
         }
     }
 
