@@ -32,7 +32,9 @@ public class UserService {
         try {
             // Verifica se já existe um usuário com o mesmo email
             if (userRepository.existsByEmail(user.getEmail())) {
-                return new ResponseEntity<>("Email já está em uso.", HttpStatus.BAD_REQUEST); 
+                return new ResponseEntity<>("Já existe uma conta com esse email.", HttpStatus.BAD_REQUEST); 
+            } else if(userRepository.existsByName(user.getName())){
+                return new ResponseEntity<>("O nome de usuário já está em uso.", HttpStatus.BAD_REQUEST);
             }
 
             // Criptografa a senha antes de salvar no banco

@@ -16,5 +16,7 @@ public interface UserRepository extends JpaRepository<User, Long>{
     User findByToken(String token); // Função pra buscar token
 
     User findByName(String user);
+
+    boolean existsByName(String user);
     
 }
