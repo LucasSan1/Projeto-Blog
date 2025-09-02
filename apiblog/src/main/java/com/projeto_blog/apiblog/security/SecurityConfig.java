@@ -29,6 +29,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .csrf(csrf -> csrf.disable())  // Desabilita o CSRF
+            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .authorizeHttpRequests(authz -> authz
                 .requestMatchers(HttpMethod.GET, "/swagger-ui.html").permitAll()
                 .requestMatchers(HttpMethod.GET, "/swagger-ui/**").permitAll()
@@ -66,7 +67,7 @@ public class SecurityConfig {
         
         // Permite todas as origens
         config.setAllowCredentials(true);  // Permite enviar credenciais (como cookies)
-        config.addAllowedOrigin("*");
+        config.addAllowedOrigin("https://project-blogj.vercel.app");
         config.addAllowedMethod("GET");
         config.addAllowedMethod("POST");
         config.addAllowedMethod("PUT");
