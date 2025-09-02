@@ -3,12 +3,14 @@ package com.projeto_blog.apiblog.service;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import com.projeto_blog.apiblog.DTO.PostResponseDTO;
 import com.projeto_blog.apiblog.DTO.UpdatePostDTO;
 import com.projeto_blog.apiblog.entity.PostEntity;
 import com.projeto_blog.apiblog.entity.User;
@@ -31,19 +33,19 @@ public class PostService {
         this.jwtTokenUtil = jwtTokenUtil;
     }
 
-    public ResponseEntity<String> createPost(PostEntity post, String token) {
+    public ResponseEntity<PostResponseDTO> createPost(PostEntity post, String token) {
         try {
 
             if (jwtTokenUtil.isTokenExpired(token)) {
-                return new ResponseEntity<>("Token expirado!", HttpStatus.UNAUTHORIZED);
+                return new ResponseEntity<>(new PostResponseDTO(null, "Token expirado!"), HttpStatus.UNAUTHORIZED);
             }
 
             // Extrair o nome de usuário do token JWT
             String username = jwtTokenUtil.extractUsername(token);
-            User user = userRepository.findByEmail(username); 
+            User user = userRepository.findByEmail(username);
 
             if (user == null) {
-                return new ResponseEntity<>("Usuário não encontrado!", HttpStatus.UNAUTHORIZED);
+                return new ResponseEntity<>(new PostResponseDTO(null, "Usuário não encontrado!"), HttpStatus.UNAUTHORIZED);
             }
 
             String dateTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
@@ -52,12 +54,16 @@ public class PostService {
             post.setAuthor(user);
             post.setDateTime(dateTime);
 
-            postsRepository.save(post);
-            return new ResponseEntity<>("Post criado com sucesso!", HttpStatus.CREATED);
+            PostEntity savedPost = postsRepository.save(post);
+
+            // Retorna PostResponseDTO com o ID do post criado
+            PostResponseDTO responseDTO = new PostResponseDTO(savedPost.getId(), "Post criado com sucesso!");
+            return ResponseEntity.status(HttpStatus.CREATED).body(responseDTO);
 
         } catch (Exception e) {
             e.printStackTrace();
-            return new ResponseEntity<>("Erro interno do Servidor: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(new PostResponseDTO(null, "Erro interno do Servidor: " + e.getMessage()),
+                    HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

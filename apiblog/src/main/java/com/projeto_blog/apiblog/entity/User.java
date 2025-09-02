@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -39,6 +40,10 @@ public class User {
     @OneToMany(mappedBy = "author")
     @JsonIgnore
     private List<PostEntity> posts;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private List<ImagesEntity> images;
 
     public User(){
     }
@@ -89,5 +94,13 @@ public class User {
 
     public void setPosts(List<PostEntity> posts) {
         this.posts = posts;
+    }
+
+    public List<ImagesEntity> getImages() {
+        return images;
+    }
+
+    public void setImages(List<ImagesEntity> images) {
+        this.images = images;
     }
 }

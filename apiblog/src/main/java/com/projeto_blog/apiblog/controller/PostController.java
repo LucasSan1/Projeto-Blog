@@ -30,7 +30,7 @@ public class PostController {
     }
 
     @PostMapping
-    public ResponseEntity<String> createPost(@RequestBody PostEntity post, @RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader) {
+    public ResponseEntity<?> createPost(@RequestBody PostEntity post, @RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader) {
        
         String token = authHeader.replace("Bearer ", "");
 

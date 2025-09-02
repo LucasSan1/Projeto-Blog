@@ -44,6 +44,7 @@ public class SecurityConfig {
                 .requestMatchers("/user/**").authenticated()  // Requer autenticação para rotas de "/user/**"
                 .requestMatchers("/posts/**").authenticated()  // Requer autenticação para "/posts/**"
                 .requestMatchers("/comments/**").authenticated()
+                .requestMatchers("/images/**").authenticated()
                 .anyRequest().denyAll()  // Bloqueia todas as outras rotas não mencionadas
             )
             .exceptionHandling(customizer -> customizer
@@ -68,6 +69,7 @@ public class SecurityConfig {
         // Permite todas as origens
         config.setAllowCredentials(true);  // Permite enviar credenciais (como cookies)
         config.addAllowedOrigin("https://project-blogj.vercel.app");
+        config.addAllowedOrigin("http://localhost:5173/");
         config.addAllowedMethod("GET");
         config.addAllowedMethod("POST");
         config.addAllowedMethod("PUT");
