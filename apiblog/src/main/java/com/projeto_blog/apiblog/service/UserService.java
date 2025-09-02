@@ -56,13 +56,19 @@ public class UserService {
     // Método para realizar o login de um usuário
     public ResponseEntity<?> loginUser(LoginRequest loginRequest) {
 
-        // Pega o email e a senha do DTO (LoginRequest)
-        String emailRecebido = loginRequest.getEmail();
+        // Pega o usuario e a senha do DTO (LoginRequest)
+        String usuarioRecebido = loginRequest.getUser();
         String senhaRecebida = loginRequest.getPassword();
       
+        User user;
+
         // Busca o usuário no banco de dados com o email fornecido
-        User user = userRepository.findByEmail(emailRecebido);
-        
+        if(usuarioRecebido.contains("@")){
+            user = userRepository.findByEmail(usuarioRecebido);
+        } else {
+            user = userRepository.findByName(usuarioRecebido);
+        }
+
         // Caso o usuário não seja encontrado ou senha incorreta
         if (user == null || !passwordEncoder.matches(senhaRecebida, user.getPassword())) {
             ErrorResponse errorResponse = new ErrorResponse("Email ou senha errados");
@@ -83,11 +89,11 @@ public class UserService {
     // Método para atualizar os dados de um usuário
     public ResponseEntity<String> updateUser(LoginRequest loginRequest) {
 
-        String email = loginRequest.getEmail();
+        String user = loginRequest.getUser();
         String senha = loginRequest.getPassword();
 
         // Tenta encontrar o usuário pelo ID
-        User userExist = userRepository.findByEmail(email);
+        User userExist = userRepository.findByEmail(user);
 
         // Se o usuário não for encontrado retorna o erro 
         if (userExist == null) {

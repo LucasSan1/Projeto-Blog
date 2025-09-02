@@ -1,16 +1,16 @@
 package com.projeto_blog.apiblog.DTO;
 
 public class LoginRequest { // Este DTO(Data Transfer Object) desestrutura o json que vem pelo RequestBody
-    private String email;
+    private String user;
     private String password;
 
     // Getter e Setter
-    public String getEmail() {
-        return email;
+    public String getUser() {
+        return user;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setUser(String user) {
+        this.user = user;
     }
 
     public String getPassword() {
