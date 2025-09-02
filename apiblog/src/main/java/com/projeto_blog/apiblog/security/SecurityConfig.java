@@ -69,7 +69,6 @@ public class SecurityConfig {
         // Permite todas as origens
         config.setAllowCredentials(true);  // Permite enviar credenciais (como cookies)
         config.addAllowedOrigin("https://project-blogj.vercel.app");
-        config.addAllowedOrigin("http://localhost:5173/");
         config.addAllowedMethod("GET");
         config.addAllowedMethod("POST");
         config.addAllowedMethod("PUT");
