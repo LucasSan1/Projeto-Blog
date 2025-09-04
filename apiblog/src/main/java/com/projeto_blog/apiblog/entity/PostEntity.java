@@ -53,6 +53,10 @@ public class PostEntity {
 
     private String category;
 
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private List<ImagesEntity> images;
+
     public PostEntity() {
     }
 
@@ -110,5 +114,13 @@ public class PostEntity {
 
     public void setComments(List<CommentEntity> comments) {
         this.comments = comments;
+    }
+
+    public List<ImagesEntity> getImages() {
+        return images;
+    }
+
+    public void setImages(List<ImagesEntity> images) {
+        this.images = images;
     }
 }

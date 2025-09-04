@@ -21,7 +21,8 @@ public class ImagesEntity {
     private String name;
 
     @Lob
-    @Column(columnDefinition = "LONGBLOB")
+    // @Column(columnDefinition = "LONGBLOB") // Isso aqui é pra mysql
+    @Column
     private byte[] image;
 
     @ManyToOne

@@ -39,6 +39,8 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/user/login").permitAll()
                 .requestMatchers(HttpMethod.PUT, "/user/forgetPass").permitAll()
                 .requestMatchers(HttpMethod.GET, "/public/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/images").permitAll()
+                .requestMatchers(HttpMethod.GET, "/images/**").permitAll()
 
 
                 .requestMatchers("/user/**").authenticated()  // Requer autenticação para rotas de "/user/**"

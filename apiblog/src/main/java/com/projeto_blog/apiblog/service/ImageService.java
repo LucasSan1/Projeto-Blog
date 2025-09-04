@@ -1,5 +1,6 @@
 package com.projeto_blog.apiblog.service;
 
+import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -42,11 +43,17 @@ public class ImageService {
             image.setUser(user);
             image.setPost(post);
 
+            ImagesEntity savedImage = imageRepository.save(image);
+            System.out.println("SAlvo " + savedImage);
             return new ResponseEntity<>("Imagem salva com sucesso!", HttpStatus.OK);
 
         } catch(Exception e){
             e.printStackTrace();
             return new ResponseEntity<>("Erro interno do Servidor: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    public List<ImagesEntity> getAllImages(){
+        return imageRepository.findAll();
     }
 }
