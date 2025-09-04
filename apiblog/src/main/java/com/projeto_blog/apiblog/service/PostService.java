@@ -66,10 +66,6 @@ public class PostService {
         }
     }
 
-    public List<PostEntity> getAllPosts() {
-        return postsRepository.findAll();
-    }
-
     public ResponseEntity<String> updatePosts(Long id, UpdatePostDTO updatePosts, String token) {
 
         String title = updatePosts.getTitle();

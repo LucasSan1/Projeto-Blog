@@ -26,32 +26,38 @@ public class ImageService {
         this.userRepository = userRepository;
     }
 
-    public ResponseEntity<String> create(MultipartFile file, String name, String token, PostEntity post){
-
-        try{
-            if(jwtTokenUtil.isTokenExpired(token)){
+   public ResponseEntity<String> create(MultipartFile[] files, String token, PostEntity post) {
+        try {
+            if (jwtTokenUtil.isTokenExpired(token)) {
                 return new ResponseEntity<>("Token expirado", HttpStatus.UNAUTHORIZED);
             }
 
             String userEmail = jwtTokenUtil.extractUsername(token);
-
             User user = userRepository.findByEmail(userEmail);
 
-            ImagesEntity image = new ImagesEntity();
-            image.setName(name);
-            image.setImage(file.getBytes());
-            image.setUser(user);
-            image.setPost(post);
+            if (user == null) {
+                return new ResponseEntity<>("Usuário não encontrado", HttpStatus.UNAUTHORIZED);
+            }
 
-            ImagesEntity savedImage = imageRepository.save(image);
-            System.out.println("SAlvo " + savedImage);
-            return new ResponseEntity<>("Imagem salva com sucesso!", HttpStatus.OK);
+            for (MultipartFile file : files) {
+                ImagesEntity image = new ImagesEntity();
+                image.setName(file.getOriginalFilename());
+                image.setImage(file.getBytes());
+                image.setUser(user);
+                image.setPost(post);
 
-        } catch(Exception e){
+                imageRepository.save(image);
+            }
+
+            return new ResponseEntity<>("Imagens salvas com sucesso!", HttpStatus.OK);
+
+        } catch (Exception e) {
             e.printStackTrace();
-            return new ResponseEntity<>("Erro interno do Servidor: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>("Erro interno do Servidor: " + e.getMessage(),
+                    HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
 
     public List<ImagesEntity> getAllImages(){
         return imageRepository.findAll();

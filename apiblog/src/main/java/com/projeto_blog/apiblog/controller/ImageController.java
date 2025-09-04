@@ -28,10 +28,9 @@ public class ImageController {
         this.imageRepository = imageRepository;
     }
 
-    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+   @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<String> uploadImage(
-            @RequestParam("file") MultipartFile file,
-            @RequestParam("name") String name,
+            @RequestParam("files") MultipartFile[] files,
             @RequestParam(value = "postId", required = false) Long postId,
             @RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader) {
 
@@ -45,14 +44,17 @@ public class ImageController {
                         .orElseThrow(() -> new RuntimeException("Post não encontrado"));
             }
 
-            return imageService.create(file, name, token, post);
+            // chama o service passando todas as imagens
+            return imageService.create(files, token, post);
 
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.internalServerError()
-                    .body("Erro ao processar a imagem: " + e.getMessage());
+                    .body("Erro ao processar as imagens: " + e.getMessage());
         }
     }
+
+
 
     @GetMapping
     public List<ImagesEntity> getAllImages(){
@@ -66,7 +68,7 @@ public class ImageController {
 
         return ResponseEntity.ok()
             .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + imageEntity.getName() + "\"")
-            .contentType(MediaType.IMAGE_JPEG) // ou MediaType.IMAGE_PNG, dependendo da imagem
+            .contentType(MediaType.IMAGE_JPEG)
             .body(imageEntity.getImage());
     }
 }

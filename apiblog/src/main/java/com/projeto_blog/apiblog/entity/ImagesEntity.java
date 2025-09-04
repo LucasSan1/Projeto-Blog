@@ -22,7 +22,7 @@ public class ImagesEntity {
 
     @Lob
     // @Column(columnDefinition = "LONGBLOB") // Isso aqui é pra mysql
-    @Column
+    @Column(name = "image", columnDefinition = "BYTEA")
     private byte[] image;
 
     @ManyToOne

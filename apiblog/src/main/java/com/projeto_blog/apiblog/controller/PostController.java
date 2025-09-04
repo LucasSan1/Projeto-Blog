@@ -1,6 +1,7 @@
 package com.projeto_blog.apiblog.controller;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -15,8 +16,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.projeto_blog.apiblog.DTO.PostDTO;
 import com.projeto_blog.apiblog.DTO.UpdatePostDTO;
 import com.projeto_blog.apiblog.entity.PostEntity;
+import com.projeto_blog.apiblog.repository.PostsRepository;
 import com.projeto_blog.apiblog.service.PostService;
 
 @RestController
@@ -24,9 +27,11 @@ import com.projeto_blog.apiblog.service.PostService;
 public class PostController {
 
     private final PostService postService;
+    private final PostsRepository postsRepository;
 
-    public PostController(PostService postService) {
+    public PostController(PostService postService, PostsRepository postRepository) {
         this.postService = postService;
+        this.postsRepository = postRepository;
     }
 
     @PostMapping
@@ -38,8 +43,10 @@ public class PostController {
     }
 
     @GetMapping
-    public List<PostEntity> getAllPosts() {
-        return postService.getAllPosts();
+    public List<PostDTO> getAllPosts() {
+    return postsRepository.findAll().stream()
+                         .map(PostDTO::new)
+                         .collect(Collectors.toList());
     }
 
     @PutMapping("/{id}")
