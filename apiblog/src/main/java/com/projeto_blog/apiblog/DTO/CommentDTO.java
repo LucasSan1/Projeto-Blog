@@ -8,6 +8,9 @@ public class CommentDTO {
     private String dateTime;
     private String authorName;
 
+    public CommentDTO() {
+    }
+
     public CommentDTO(CommentEntity comment) {
         this.Content = comment.getContent();
         this.dateTime = comment.getDatetime();
