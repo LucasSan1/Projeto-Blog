@@ -20,9 +20,9 @@ public class ImagesEntity {
 
     private String name;
 
-    @Lob
-    // @Column(columnDefinition = "LONGBLOB") // Isso aqui é pra mysql
-    @Column(name = "image", columnDefinition = "BYTEA")
+    // @Lob
+    // @Column(name = "image", columnDefinition = "BYTEA") // Isso aqui é para postgree
+    @Column(columnDefinition = "LONGBLOB") // Isso aqui é pra mysql
     private byte[] image;
 
     @ManyToOne

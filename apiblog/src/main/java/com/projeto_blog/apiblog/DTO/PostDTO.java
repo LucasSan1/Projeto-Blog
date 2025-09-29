@@ -7,13 +7,14 @@ import com.projeto_blog.apiblog.entity.ImagesEntity;
 import com.projeto_blog.apiblog.entity.PostEntity;
 
 public class PostDTO {
-     private Long id;
+    private Long id;
     private String title;
     private String content;
     private String authorName;
     private String authorEmail;
     private String dateTime;
     private List<Long> imagesIds;
+    private List<CommentDTO> comments;
 
     public PostDTO(PostEntity post) {
         this.id = post.getId();
@@ -22,9 +23,14 @@ public class PostDTO {
         this.authorName = post.getAuthorName();
         this.dateTime = post.getDateTime();
         this.authorEmail = post.getAuthorEmail();
+        
         this.imagesIds = post.getImages().stream()
                              .map(ImagesEntity::getId)
                              .collect(Collectors.toList());
+        
+        this.comments = post.getComments().stream()
+                            .map(CommentDTO::new) // converte cada CommentEntity para CommentDTO
+                            .collect(Collectors.toList());
     }
     
     public String getDateTime() {
@@ -81,6 +87,14 @@ public class PostDTO {
 
     public void setImagesIds(List<Long> imagesIds) {
         this.imagesIds = imagesIds;
+    }
+
+    public List<CommentDTO> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<CommentDTO> comments) {
+        this.comments = comments;
     }
 
     
