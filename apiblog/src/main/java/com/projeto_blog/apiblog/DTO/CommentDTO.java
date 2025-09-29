@@ -4,7 +4,8 @@ import com.projeto_blog.apiblog.entity.CommentEntity;
 
 public class CommentDTO {
 
-    private String Content;
+    private Long id;
+    private String content;
     private String dateTime;
     private String authorName;
 
@@ -12,13 +13,22 @@ public class CommentDTO {
     }
 
     public CommentDTO(CommentEntity comment) {
-        this.Content = comment.getContent();
+        this.id = comment.getId();
+        this.content = comment.getContent();
         this.dateTime = comment.getDatetime();
         this.authorName = comment.getAuthorName();
     }
     
     public String getDateTime() {
         return dateTime;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public void setDateTime(String dateTime) {
@@ -34,11 +44,11 @@ public class CommentDTO {
     }
 
     public String getContent() {
-        return Content;
+        return content;
     }
 
-    public void setContent(String content) {
-        Content = content;
+    public void setContent(String contentt) {
+        content = contentt;
     }
     
 }
