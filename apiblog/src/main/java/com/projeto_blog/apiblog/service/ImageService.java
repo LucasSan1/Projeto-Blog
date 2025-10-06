@@ -45,7 +45,7 @@ public class ImageService {
                 image.setImage(file.getBytes());
                 image.setUser(user);
                 image.setPost(post);
-
+                
                 imageRepository.save(image);
             }
 
