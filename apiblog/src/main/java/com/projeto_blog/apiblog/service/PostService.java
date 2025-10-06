@@ -1,6 +1,7 @@
 package com.projeto_blog.apiblog.service;
 
-import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -47,7 +48,8 @@ public class PostService {
                 return new ResponseEntity<>(new PostResponseDTO(null, "Usuário não encontrado!"), HttpStatus.UNAUTHORIZED);
             }
 
-            String dateTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+            ZoneId Fzone = ZoneId.of("America/Sao_Paulo");
+            String dateTime = ZonedDateTime.now(Fzone).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 
             // Associar o autor (usuário) ao post
             post.setAuthor(user);

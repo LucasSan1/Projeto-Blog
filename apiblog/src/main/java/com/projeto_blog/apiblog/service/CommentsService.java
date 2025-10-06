@@ -1,6 +1,8 @@
 package com.projeto_blog.apiblog.service;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -54,7 +56,8 @@ public class CommentsService {
             CommentEntity comment = new CommentEntity();
             comment.setContent(commentDTO.getContent());
             
-            String dateTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+            ZoneId Fzone = ZoneId.of("America/Sao_Paulo");
+            String dateTime = ZonedDateTime.now(Fzone).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
             comment.setDatetime(dateTime);
 
             comment.setAuthor(user);
