@@ -15,6 +15,7 @@ public class PostDTO {
     private String dateTime;
     private List<Long> imagesIds;
     private List<CommentDTO> comments;
+    private String category;
 
     public PostDTO(PostEntity post) {
         this.id = post.getId();
@@ -23,6 +24,7 @@ public class PostDTO {
         this.authorName = post.getAuthorName();
         this.dateTime = post.getDateTime();
         this.authorEmail = post.getAuthorEmail();
+        this.category = post.getCategory();
         
         this.imagesIds = post.getImages().stream()
                              .map(ImagesEntity::getId)
