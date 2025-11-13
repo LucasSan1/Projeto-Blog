@@ -41,12 +41,8 @@ public class UserController {
     }
 
     @DeleteMapping()
-    public ResponseEntity<?> deleteUser(@RequestHeader("Authorization") String token) {
-        return userService.deleteUser(token);
-    }
+    public ResponseEntity<?> deleteUser(@RequestBody LoginRequest loginRequest, @RequestHeader("Authorization") String token) {
+        return userService.deleteUser(loginRequest, token);
 
-    @PostMapping("/logout")
-    public ResponseEntity<?> logoutUser(@RequestHeader("Authorization") String token) {
-        return userService.logoutUser(token);
     }
 }

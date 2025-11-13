@@ -1,5 +1,6 @@
 package com.projeto_blog.apiblog.service;
 
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -94,9 +95,12 @@ public class PostService {
                 throw new UnauthorizedAccessException("Você não tem permissão para editar este post!");
             }
 
+            String dateTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+
             post.setTitle(title);
             post.setContent(content);
             post.setCategory(category);
+            post.setDateTime(dateTime);
 
             postsRepository.save(post);
 

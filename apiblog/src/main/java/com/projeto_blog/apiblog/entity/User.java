@@ -34,7 +34,6 @@ public class User {
     @NotBlank
     private String password;
 
-    private String token;
 
     // Relacionamento OneToMany (um pra muitos) com PostEntity
     @OneToMany(mappedBy = "author")
@@ -78,14 +77,6 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
     }
 
     public List<PostEntity> getPosts() {

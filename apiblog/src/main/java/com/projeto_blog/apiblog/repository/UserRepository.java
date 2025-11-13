@@ -13,8 +13,6 @@ public interface UserRepository extends JpaRepository<User, Long>{
 
     boolean existsByEmail(String email); // Função pra verificar se email já existe
 
-    User findByToken(String token); // Função pra buscar token
-
     User findByName(String user);
 
     boolean existsByName(String user);

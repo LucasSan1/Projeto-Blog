@@ -79,8 +79,6 @@ public class UserService {
 
         // Gera o token
         String token = JwtTokenUtil.generateToken(user.getEmail());
-
-        user.setToken(token); // Salva o token do usuario no banco
         userRepository.save(user);
 
         // Caso o login seja bem-sucedido, retorna a mensagem de logado com sucesso e o token
@@ -111,14 +109,22 @@ public class UserService {
     }
 
     // Método para deletar um usuário
-    public ResponseEntity<?> deleteUser(String token) {
-        token = token.substring(7);
-        // Tenta encontrar o usuário pelo ID
-        User userExist = userRepository.findByToken(token);
+    public ResponseEntity<?> deleteUser(LoginRequest loginRequest, String token) {
 
+        String user = loginRequest.getUser();
+        String senha = loginRequest.getPassword();
+
+        User userExist = userRepository.findByEmail(user);
+        
         // Se o usuário não for encontrado retorna o erro 
         if (userExist == null) {
-            ErrorResponse errorResponse = new ErrorResponse("Token inválido");
+            ErrorResponse errorResponse = new ErrorResponse("Usuário não encontrado.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
+        }
+
+        // Verifica se a senha está correta para confirmar o usuario a ser deletado
+        if (!passwordEncoder.matches(senha, userExist.getPassword())) {
+            ErrorResponse errorResponse = new ErrorResponse("Senha incorreta.");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
         }
 
@@ -126,27 +132,5 @@ public class UserService {
         userRepository.delete(userExist); 
         return new ResponseEntity<>("Usuário deletado com sucesso!", HttpStatus.OK); 
     }
-
-    // Metodo para fazer o logout do usuario removendo seu token
-    public ResponseEntity<?> logoutUser(String token) {
-        // Caso o token tenha o prefixo "Bearer ", remova-o
-        if (token.startsWith("Bearer ")) {
-            token = token.substring(7);
-        }
-
-        // Tenta encontrar o usuário pelo token
-        User userExist = userRepository.findByToken(token);
-        
-        if (userExist == null) {
-            ErrorResponse errorResponse = new ErrorResponse("Erro ao fazer logout!");
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
-        }
-
-        // Remove o token do usuário
-        userExist.setToken(null);
-        userRepository.save(userExist);
-        return ResponseEntity.ok("Logout realizado com sucesso!");
-    }
-            
 
 }
