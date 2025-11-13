@@ -59,6 +59,45 @@ public class ImageService {
     }
 
 
+   public ResponseEntity<String> deleteImages(List<Long> imageIds, String token) {
+        try {
+            if (jwtTokenUtil.isTokenExpired(token)) {
+                return new ResponseEntity<>("Token expirado", HttpStatus.UNAUTHORIZED);
+            }
+
+            String userEmail = jwtTokenUtil.extractUsername(token);
+            User user = userRepository.findByEmail(userEmail);
+
+            if (user == null) {
+                return new ResponseEntity<>("Usuário não encontrado", HttpStatus.UNAUTHORIZED);
+            }
+
+            // Percorre e deleta as imagens
+            for (Long id : imageIds) {
+                ImagesEntity image = imageRepository.findById(id).orElse(null);
+                if (image == null) continue;
+
+                // Verifica se a imagem pertence ao usuário antes de deletar
+                if (!image.getPost().getAuthorEmail().equals(userEmail)) {
+                    return new ResponseEntity<>(
+                        "Você não tem permissão para deletar a imagem ID " + id,
+                        HttpStatus.FORBIDDEN
+                    );
+                }
+
+                imageRepository.delete(image);
+            }
+
+            return new ResponseEntity<>("Imagens deletadas com sucesso!", HttpStatus.OK);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>("Erro interno do servidor: " + e.getMessage(),
+                    HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
     public List<ImagesEntity> getAllImages(){
         return imageRepository.findAll();
     }

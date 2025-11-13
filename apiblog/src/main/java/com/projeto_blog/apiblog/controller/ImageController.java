@@ -71,4 +71,21 @@ public class ImageController {
             .contentType(MediaType.IMAGE_JPEG)
             .body(imageEntity.getImage());
     }
+
+
+    @DeleteMapping()
+    public ResponseEntity<String> deleteImages(
+            @RequestBody List<Long> imageIds,
+            @RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader) {
+                
+        try {
+            String token = authHeader.replace("Bearer ", "");
+            return imageService.deleteImages(imageIds, token);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.internalServerError()
+                    .body("Erro ao deletar imagens: " + e.getMessage());
+        }
+    }
 }
