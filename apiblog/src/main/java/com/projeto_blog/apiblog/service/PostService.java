@@ -49,6 +49,10 @@ public class PostService {
                 return new ResponseEntity<>(new PostResponseDTO(null, "Usuário não encontrado!"), HttpStatus.UNAUTHORIZED);
             }
 
+            if (post.getTitle().isEmpty() || post.getContent().isEmpty()){
+                return new ResponseEntity<>(new PostResponseDTO(null, "Título e conteúdo não podem ser vazios!"), HttpStatus.BAD_REQUEST);
+            }
+
             ZoneId Fzone = ZoneId.of("America/Sao_Paulo");
             String dateTime = ZonedDateTime.now(Fzone).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 
